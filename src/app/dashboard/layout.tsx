@@ -1,22 +1,34 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaList, FaBox } from "react-icons/fa";
+import { FaHome, FaList, FaBox, FaBars } from "react-icons/fa";
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const path = usePathname();
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 bg-green-700 p-4 text-white font-bold">
+      {/* Button for small screens */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="absolute top-4 left-4 z-50 p-2 bg-green-700 text-white rounded md:hidden"
+      >
+        <FaBars />
+      </button>
+      <aside
+        className={`fixed top-0 left-0 w-64 h-full min-h-screen bg-green-700 text-white p-4 font-bold transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 md:relative md:translate-x-0`}
+      >
         <nav>
-          <ul className="space-y-2">
+          <ul className="space-y-2 mt-16 md:mt-0">
             <li>
               <Link
                 href="/dashboard"
@@ -40,7 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }`}
               >
                 <FaList />
-                <div className="px-2">Departments</div>
+                <div className="px-2 hidden md:block">Departments</div>
               </Link>
             </li>
             <li>
