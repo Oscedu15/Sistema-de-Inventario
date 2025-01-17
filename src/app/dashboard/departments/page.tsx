@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-export default function SettingsPage() {
+export default function DepartmentsPage() {
   return (
     <div className="flex ">
-      <div>SettingsPage</div>
+      <div>Departments Page</div>
       <div className="flex justify-center w-96 items-center">
         <Link
           href="/dashboard"

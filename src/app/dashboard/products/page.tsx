@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-export default function ReportPage() {
+export default function ProductsPage() {
   return (
     <div className="flex">
-      <div>ReportPage</div>
+      <div>Products Page</div>
       <div className="flex justify-center w-96 items-center">
         <Link
           href="/dashboard"
