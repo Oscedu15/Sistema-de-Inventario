@@ -3,17 +3,29 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.$executeRaw`DELETE FROM Supplier;`;
+  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name = 'Supplier';`;
+  await prisma.$executeRaw`DELETE FROM Product;`;
+  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name = 'Product';`;
   await prisma.$executeRaw`DELETE FROM Department;`;
   await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name = 'Department';`;
-  // Create Departments
-  await prisma.department.deleteMany();
+
+  // Crear Tabla de Departamentos
   await prisma.department.createMany({
     data: [{ name: "Tools" }, { name: "Paints" }, { name: "Electricity" }],
   });
   console.log("Departaments created");
 
-  // Create Products
-  await prisma.product.deleteMany();
+  // Crear Tabla de Proovedores
+  await prisma.supplier.createMany({
+    data: [
+      { name: "Paints Supplier", contact: "supplier-paints@gmail.com" },
+      { name: "Tools Supplier", contact: "supplier-tools@gmail.com" },
+    ],
+  });
+  console.log("Products suppliers");
+
+  // Crear Tabla de Productos
   await prisma.product.createMany({
     data: [
       {
@@ -22,6 +34,7 @@ async function main() {
         price: 15.99,
         cost: 12.99,
         departmentId: 1,
+        supplierId: 2,
       },
       {
         name: "White Paint",
@@ -29,6 +42,7 @@ async function main() {
         price: 19.99,
         cost: 17.99,
         departmentId: 2,
+        supplierId: 1,
       },
       {
         name: "Electric Cable",
@@ -36,6 +50,7 @@ async function main() {
         price: 4.99,
         cost: 2.99,
         departmentId: 3,
+        supplierId: 2,
       },
     ],
   });
@@ -50,3 +65,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+  //npx prisma db seed
