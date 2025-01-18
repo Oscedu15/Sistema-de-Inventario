@@ -1,5 +1,6 @@
-'use client'
+"use client";
 import React, { useState } from "react";
+import { FaDatabase, FaTimes } from "react-icons/fa";
 
 export default function DepartmentForm() {
   const [name, setName] = useState("");
@@ -24,8 +25,7 @@ export default function DepartmentForm() {
       } else {
         setMessage("Error creating departments");
       }
-    } 
-    catch (error) {
+    } catch (error) {
       setMessage("Something went wrong");
       console.error("Error >>>:", error);
     } finally {
@@ -34,10 +34,47 @@ export default function DepartmentForm() {
   };
 
   const handleCancel = () => {
-    setName('')
-  }
+    setName("");
+  };
 
-  return <form onSubmit={handleSubmit} className="bg-white p-6 space-y-4 rounded shadow">
-    <h2 className="text-2xl font-bold">Create Department</h2>
-  </form>;
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 space-y-4 rounded shadow"
+    >
+      <h2 className="text-2xl font-bold">Create Department</h2>
+      <div>
+        <label htmlFor="name" className="block font-medium">
+          Department Name:
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          required
+        />
+      </div>
+      <div className="flex space-x-4">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+        >
+          <FaDatabase className="mr-2" />
+          <span>{loading ? "Creating..." : "Create"}</span>
+        </button>
+        <button
+          onClick={handleCancel}
+          className="flex items-center bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        >
+          <FaTimes className="mr-2" />
+          <span>Cancel</span>
+        </button>
+      </div>
+      {message && <p className="mt-4 text-sm text-gray-700">{message}</p>}
+    </form>
+  );
 }
