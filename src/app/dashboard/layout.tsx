@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaList, FaBox, FaBars } from "react-icons/fa";
+import { FaHome, FaList, FaBox, FaBars, FaTimes } from "react-icons/fa";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -18,9 +18,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Button for small screens */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-4 left-4 z-50 p-2 bg-green-700 text-white rounded md:hidden"
+        className="absolute top-4 right-4 z-50 p-2 bg-green-700 text-white rounded md:hidden"
       >
-        <FaBars />
+        {isOpen ? <FaTimes /> : <FaBars />}
       </button>
       <aside
         className={`fixed top-0 left-0 w-64 h-full min-h-screen bg-green-700 text-white p-4 font-bold transform ${

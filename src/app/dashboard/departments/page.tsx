@@ -1,18 +1,10 @@
-import Link from "next/link";
+import DepartmentForm from "@/components/DepartmentForm";
 
 export default function DepartmentsPage() {
   return (
-    <div className="flex ">
-      <div>Departments Page</div>
-      <div className="flex justify-center w-96 items-center">
-        <Link
-          href="/dashboard"
-          className="bg-blue-600  hover:bg-blue-500 text-white
-      p-4 transition-300 rounded-lg"
-        >
-          Regresar a Dashboard
-        </Link>
-      </div>
+    <div className="w-6/12">
+      <h1 className="text-3xl font-bold mb-4">Departments</h1>
+      <DepartmentForm />
     </div>
   );
 }
