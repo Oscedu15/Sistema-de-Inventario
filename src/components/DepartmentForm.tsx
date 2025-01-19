@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 import { FaDatabase, FaFileAlt, FaTimes } from "react-icons/fa";
 
@@ -22,6 +23,9 @@ export default function DepartmentForm() {
       if (response.ok) {
         setMessage("Department created succesfully!");
         setName("");
+        setTimeout(() => {
+          redirect("/dashboard/departments/list");
+        }, 700);
       } else {
         setMessage("Error creating departments");
       }

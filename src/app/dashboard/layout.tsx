@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const path = usePathname();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       {/* Button for small screens */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }`}
               >
                 <FaList />
-                <div className="px-2 hidden md:block">Departments</div>
+                <div className="px-2 block">Departments</div>
               </Link>
             </li>
             <li>
