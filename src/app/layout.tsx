@@ -34,3 +34,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+//npm install @headlessui/react = Nos permite crear un combobox interactivo, para poder usar la busquedas incrementales

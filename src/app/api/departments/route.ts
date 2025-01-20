@@ -35,8 +35,17 @@ export async function GET(req: Request) {
     //Esta constante limit, nos sirve para recuperar el limite de elementos por pagina, forzando que sea un numero entero con parseInt, obteniendo el valor de la propiedad limit, y si no hay ningun valor, se establece por defecto en 10
     const limit = parseInt(url.searchParams.get("limit") || "10", 10);
 
+    //Lo utilizamos para obtener de la url la propiedad search y si no existe la establecemos en blanco.
+    const search = url.searchParams.get("search") || "";
+
     //Solicita a la base de datos la lista de departamentos
     const departments = await prisma.department.findMany({
+      //Funcionalidad para activar las busquedas, donde el nombre coincida con search(el departamento a buscar)
+      where: {
+        name: {
+          contains: search,
+        },
+      },
       //skip: (page - 1) * limit, nos permite saltar los elementos que no queremos mostrar
       skip: (page - 1) * limit,
       //take: limit, nos permite tomar o limitar los elementos que queremos mostrar
@@ -44,7 +53,14 @@ export async function GET(req: Request) {
     });
 
     //Solicita a la base de datos, el numero total de departamentos
-    const total = await prisma.department.count();
+    const total = await prisma.department.count({
+      //Funcionalidad para activar las busquedas, donde el nombre coincida con search(el departamento a buscar)
+      where: {
+        name: {
+          contains: search,
+        },
+      },
+    });
     //!Aqui terminan los pasos para hacer la paginacion
 
     //Si la respuesta es afirmativa, la devolverá en formato json, con un status 200 de respuesta afirmativa, pasando como parametros los departamentos, el total de departamentos, la pagina y el limite para la paginacion
