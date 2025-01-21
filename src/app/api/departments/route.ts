@@ -38,29 +38,24 @@ export async function GET(req: Request) {
     //Lo utilizamos para obtener de la url la propiedad search y si no existe la establecemos en blanco.
     const search = url.searchParams.get("search") || "";
 
-    //Solicita a la base de datos la lista de departamentos
-    const departments = await prisma.department.findMany({
-      //Funcionalidad para activar las busquedas, donde el nombre coincida con search(el departamento a buscar)
-      where: {
-        name: {
-          contains: search,
-        },
-      },
-      //skip: (page - 1) * limit, nos permite saltar los elementos que no queremos mostrar
-      skip: (page - 1) * limit,
-      //take: limit, nos permite tomar o limitar los elementos que queremos mostrar
-      take: limit,
-    });
+    const departments = search
+      ? //Solicita a la base de datos la lista de departamentos
+        await prisma.department.findMany({
+          where: {
+            name: {
+              contains: search,
+            },
+          },
+        })
+      : await prisma.department.findMany({
+          //skip: (page - 1) * limit, nos permite saltar los elementos que no queremos mostrar
+          skip: (page - 1) * limit,
+          //take: limit, nos permite tomar o limitar los elementos que queremos mostrar
+          take: limit,
+        });
 
     //Solicita a la base de datos, el numero total de departamentos
-    const total = await prisma.department.count({
-      //Funcionalidad para activar las busquedas, donde el nombre coincida con search(el departamento a buscar)
-      where: {
-        name: {
-          contains: search,
-        },
-      },
-    });
+    const total = await prisma.department.count({});
     //!Aqui terminan los pasos para hacer la paginacion
 
     //Si la respuesta es afirmativa, la devolverá en formato json, con un status 200 de respuesta afirmativa, pasando como parametros los departamentos, el total de departamentos, la pagina y el limite para la paginacion
@@ -98,6 +93,39 @@ export async function PATCH(req: Request) {
     console.error(error);
     //Devolvemos una respuesta htpp indicando que hubo un error a la hora de actualizar el departamento
     return new Response("Failed to update department", { status: 500 });
+  }
+}
+
+//Todo: Funcion para eliminar Departamentos
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+
+    if (!id) {
+      return new Response("ID not ok", { status: 400 });
+    }
+
+    //?Validation future relationships
+
+    //Aqui guardamos la cantidad de productos relacionados con el departamento que queremos eliminar
+    const relatedProductsCount = await prisma.product.count({
+      where: { departmentId: parseInt(id, 10) },
+    });
+    //Si hay un producto o mas con el departamento a eliminar, arrojamos el siguiente error
+    if (relatedProductsCount > 0) {
+      return new Response("Cannot delete department with related products", {
+        status: 400,
+      });
+    }
+
+    //Guardamos en esta constante el departamento eliminado
+    const department = await prisma.department.delete({
+      where: { id: parseInt(id, 10) },
+    });
+
+    return Response.json(department, { status: 200 });
+  } catch (error) {
+    console.error(error);
   }
 }
 

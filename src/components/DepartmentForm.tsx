@@ -7,7 +7,13 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { FaDatabase, FaFileAlt, FaTimes, FaSearch } from "react-icons/fa";
+import {
+  FaDatabase,
+  FaFileAlt,
+  FaTimes,
+  FaSearch,
+  FaTrash,
+} from "react-icons/fa";
 
 //Creamos la intrefaz de Department
 interface Department {
@@ -31,38 +37,28 @@ export default function DepartmentForm() {
   //En este estado guardamos el estado, para aperturar o no el input de busqueda
   const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
 
-  //!Funcionalidad para trabajar con la busqueda incremental.
   useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        //Al montarse el componente, hacemos un llamado a la api
-        const response = await fetch("/api/departments");
-        //Si la respuesta es ok, la guardamos en una constante despues de convertirla en formato json
-        if (response.ok) {
-          const data = await response.json();
-          //Luego la almacenamos en el estado setDepartments
-          setDepartments(data.departments);
-        } else {
-          console.error("Failed to fetch departments");
-        }
-      } catch (error) {
-        console.error("Error fetching departments", error);
+    fetchDepartments(query);
+  }, [query]);
+
+  const fetchDepartments = async (search: string) => {
+    try {
+      const url = search
+        ? `/api/departments?search=${search}`
+        : "/api/departments";
+
+      const response = await fetch(url);
+
+      if (response.ok) {
+        const data = await response.json();
+        setDepartments(data.departments);
+      } else {
+        console.error("Failed to fetch departments");
       }
-    };
-
-    fetchDepartments();
-  }, []);
-
-  //Filtramos los departamentos, dependiendo del texto de busqueda
-  const filteredDepartments =
-    //Si query es igual a "", cargamos todos los departamentos, sino filtramos y cargamos el departamento que coincida con el valor de query en minuscula
-    query === ""
-      ? departments
-      : departments.filter((department) =>
-          department.name
-            .toLocaleLowerCase()
-            .includes(query.toLocaleLowerCase())
-        );
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
 
   //Funcion para refrescar la lista de Departamentos
   const refreshDepartments = async () => {
@@ -79,6 +75,41 @@ export default function DepartmentForm() {
       }
     } catch (error) {
       console.error("Error refreshing departments", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectdDepartment) return;
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the department: ${selectdDepartment.name}?`
+    );
+
+    if (!confirmDelete) return;
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/departments", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectdDepartment.id }),
+      });
+
+      if (response.ok) {
+        setMessage("Department deleted successufully!");
+        setSelectdDepartment(null);
+        setName("");
+        await refreshDepartments();
+      } else {
+        setMessage("Error deleting department");
+      }
+    } catch (error) {
+      setMessage("Something went wrong");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -175,10 +206,11 @@ export default function DepartmentForm() {
               />
               <ComboboxOptions className="absolute z-10 mt-1 max-h-60  w-full overflow-auto bg-white border rounded shadow-lg">
                 {/* Si luego de que el usuario ingrese unos datos y no encuentre coincidencias, responde: No Results Found */}
-                {filteredDepartments.length === 0 ? (
+
+                {departments?.length === 0 ? (
                   <div className="p-2 text-gray-700">No results found</div>
                 ) : (
-                  filteredDepartments.map((department: Department) => (
+                  departments.map((department: Department) => (
                     // Si se consigue coincidencias, con los datos ingresados por el usuario, los muestra en pantalla
                     <ComboboxOption
                       key={department.id}
@@ -240,6 +272,16 @@ export default function DepartmentForm() {
         >
           <FaTimes className="mr-2" />
           <span>Cancel</span>
+        </button>
+        <button
+          type="button"
+          className={`flex items-center bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded ${
+            !selectdDepartment ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          onClick={handleDelete}
+        >
+          <FaTrash className="mr-2" />
+          <span>{loading ? "Deleting..." : "Delete"}</span>
         </button>
         <button
           type="button"
