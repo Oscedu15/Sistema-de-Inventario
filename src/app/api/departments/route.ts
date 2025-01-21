@@ -72,6 +72,35 @@ export async function GET(req: Request) {
   }
 }
 
+//Todo: Funcion para actualizar nombres de Departamentos
+export async function PATCH(req: Request) {
+  try {
+    //Convierte el cuerpo de la solicitud http a un objeto javascript
+    const { id, name } = await req.json();
+
+    //Si el id o el name no existe, retorna un status 400
+    if (!id || !name) {
+      return new Response("ID and Name are Required", { status: 400 });
+    }
+
+    //Hacemos un llamado a la base de datos, con el metodo update
+    // para la modificacion de los departamentos
+    const department = await prisma.department.update({
+      //Usamos parseInt para pasar el id de un string a numero entero en base de 10
+      where: { id: parseInt(id, 10) },
+      //Enviamos como data, el nombre del departamento a actualizar
+      data: { name },
+    });
+
+    return Response.json(department, { status: 200 });
+  } catch (error) {
+    //Con console.error, mostramos el error en la consola del servidor
+    console.error(error);
+    //Devolvemos una respuesta htpp indicando que hubo un error a la hora de actualizar el departamento
+    return new Response("Failed to update department", { status: 500 });
+  }
+}
+
 //request = requerir
 
 //response = respuesta
