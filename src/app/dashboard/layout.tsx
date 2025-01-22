@@ -70,6 +70,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
               </Link>
             </li>
+            <li>
+              <Link
+                href="/dashboard/suppliers"
+                className={`flex items-center space-x-2 p-2 rounded hover:bg-green-400 ${
+                  path === "/dashboard/suppliers"
+                    ? "bg-green-400 text-white"
+                    : "text-gray-300 font-semibold"
+                }`}
+              >
+                <div className="flex justify-center gap-x-4 items-center">
+                  <FaBox className="w-5 h-5 hover:w-6 hover:h-6" />
+                  Suppliers
+                </div>
+              </Link>
+            </li>
           </ul>
         </nav>
       </aside>
