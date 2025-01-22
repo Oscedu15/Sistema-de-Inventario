@@ -173,136 +173,145 @@ export default function DepartmentForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 space-y-4 rounded shadow"
-    >
-      <h2 className="text-2xl font-bold">Manage Department</h2>
+    <div className="flex bg-gray-200 flex-col items-center justify-center h-screen">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 space-y-4 rounded shadow"
+      >
+        <h2
+          className="text-2xl font-bold text-center
+        text-green-800 bg-green-100 px-4 py-2 rounded-md shadow-sm"
+        >
+          Manage Departments
+        </h2>
 
-      {/* Combobox for search */}
-      {/* Si el usuario solicita el input, isSearchActive pasa a estar en true y emerge el siguiente codigo  */}
-      {isSearchActive && (
+        {/* Combobox for search */}
+        {/* Si el usuario solicita el input, isSearchActive pasa a estar en true y emerge el siguiente codigo  */}
+        {isSearchActive && (
+          <div>
+            <label htmlFor="search" className="block font-medium">
+              Search Department
+            </label>
+            {/* Combobox es una libreria de terceros, que nos permite una mejor interaccion con el usuario a nivel de interfaz */}
+            <Combobox
+              value={selectdDepartment}
+              onChange={(department) => {
+                //Guardamos el departamento seleccionado por el usuario
+                setSelectdDepartment(department);
+                setName(department?.name || "");
+              }}
+            >
+              <div className="relative">
+                <ComboboxInput
+                  className="w-full p-2 border rounded"
+                  onChange={(e) => setQuery(e.target.value)}
+                  displayValue={(department: Department) =>
+                    department?.name || ""
+                  }
+                  placeholder="Type to search..."
+                />
+                <ComboboxOptions className="absolute z-10 mt-1 max-h-60  w-full overflow-auto bg-white border rounded shadow-lg">
+                  {/* Si luego de que el usuario ingrese unos datos y no encuentre coincidencias, responde: No Results Found */}
+
+                  {departments?.length === 0 ? (
+                    <div className="p-2 text-gray-700">No results found</div>
+                  ) : (
+                    departments.map((department: Department) => (
+                      // Si se consigue coincidencias, con los datos ingresados por el usuario, los muestra en pantalla
+                      <ComboboxOption
+                        key={department.id}
+                        value={department}
+                        className="cursor-pointer select-none p-2 hover:bg-gray-200"
+                      >
+                        {department.name}
+                      </ComboboxOption>
+                    ))
+                  )}
+                </ComboboxOptions>
+              </div>
+            </Combobox>
+          </div>
+        )}
+
+        {/* Department Name */}
         <div>
-          <label htmlFor="search" className="block font-medium">
-            Search Department
+          <label htmlFor="name" className="block font-medium">
+            Department Name:
           </label>
-          {/* Combobox es una libreria de terceros, que nos permite una mejor interaccion con el usuario a nivel de interfaz */}
-          <Combobox
-            value={selectdDepartment}
-            onChange={(department) => {
-              //Guardamos el departamento seleccionado por el usuario
-              setSelectdDepartment(department);
-              setName(department?.name || "");
-            }}
-          >
-            <div className="relative">
-              <ComboboxInput
-                className="w-full p-2 border rounded"
-                onChange={(e) => setQuery(e.target.value)}
-                displayValue={(department: Department) =>
-                  department?.name || ""
-                }
-                placeholder="Type to search..."
-              />
-              <ComboboxOptions className="absolute z-10 mt-1 max-h-60  w-full overflow-auto bg-white border rounded shadow-lg">
-                {/* Si luego de que el usuario ingrese unos datos y no encuentre coincidencias, responde: No Results Found */}
-
-                {departments?.length === 0 ? (
-                  <div className="p-2 text-gray-700">No results found</div>
-                ) : (
-                  departments.map((department: Department) => (
-                    // Si se consigue coincidencias, con los datos ingresados por el usuario, los muestra en pantalla
-                    <ComboboxOption
-                      key={department.id}
-                      value={department}
-                      className="cursor-pointer select-none p-2 hover:bg-gray-200"
-                    >
-                      {department.name}
-                    </ComboboxOption>
-                  ))
-                )}
-              </ComboboxOptions>
-            </div>
-          </Combobox>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            // SIi existe un departamento seleccionado en el input de busqueda, tambien lo refleja en este input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
         </div>
-      )}
-
-      {/* Department Name */}
-      <div>
-        <label htmlFor="name" className="block font-medium">
-          Department Name:
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          // SIi existe un departamento seleccionado en el input de busqueda, tambien lo refleja en este input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-          required
-        />
-      </div>
-      {/* Actions Buttons */}
-      <div className="flex flex-wrap justify-center gap-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className={`flex items-center text-white px-4 py-2 rounded
+        {/* Actions Buttons */}
+        <div className="flex flex-wrap justify-center gap-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`flex items-center text-white px-4 py-2 rounded
             ${
               selectdDepartment
                 ? "bg-yellow-500 hover:bg-yellow-600"
                 : "bg-green-600 hover:bg-green-700"
             }`}
-        >
-          <FaDatabase className="mr-2" />
-          <span>
-            {loading
-              ? selectdDepartment
-                ? "Updating ..."
-                : "Creating ..."
-              : selectdDepartment
-              ? "Update"
-              : "Create"}
-          </span>
-        </button>
-        <button
-          onClick={handleCancel}
-          className="flex items-center bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
-          <FaTimes className="mr-2" />
-          <span>Cancel</span>
-        </button>
-        <button
-          type="button"
-          className={`flex items-center bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded ${
-            !selectdDepartment ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={handleDelete}
-        >
-          <FaTrash className="mr-2" />
-          <span>{loading ? "Deleting..." : "Delete"}</span>
-        </button>
-        <button
-          type="button"
-          // Al darle click a este botn, hacemos emerger u ocultar el input de busqueda .
-          onClick={toggleSearch}
-          className="flex items-center text-white bg-gray-500 text-whit px-4 py-2
+          >
+            <FaDatabase className="mr-2" />
+            <span>
+              {loading
+                ? selectdDepartment
+                  ? "Updating ..."
+                  : "Creating ..."
+                : selectdDepartment
+                ? "Update"
+                : "Create"}
+            </span>
+          </button>
+          <button
+            onClick={handleCancel}
+            className="flex items-center bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+          >
+            <FaTimes className="mr-2" />
+            <span>Cancel</span>
+          </button>
+          <button
+            type="button"
+            className={`flex items-center bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded ${
+              !selectdDepartment ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={handleDelete}
+          >
+            <FaTrash className="mr-2" />
+            <span>{loading ? "Deleting..." : "Delete"}</span>
+          </button>
+          <button
+            type="button"
+            // Al darle click a este botn, hacemos emerger u ocultar el input de busqueda .
+            onClick={toggleSearch}
+            className="flex items-center text-white bg-gray-500 text-whit px-4 py-2
         rounded hover:bg-gray-600"
-        >
-          <FaSearch className="mr-2" />
-          <span>{isSearchActive ? "Close Search" : "Find"}</span>
-        </button>
-        {/* window.location.href : Funcion que nos permite en cambiarnos, de una ventana a otra */}
-        <button
-          onClick={() => (window.location.href = "/dashboard/departments/list")}
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          <FaFileAlt className="mr-2" />
-          <span>View List</span>
-        </button>
-      </div>
-      {message && <p className="mt-4 text-sm text-gray-700">{message}</p>}
-    </form>
+          >
+            <FaSearch className="mr-2" />
+            <span>{isSearchActive ? "Close Search" : "Find"}</span>
+          </button>
+          {/* window.location.href : Funcion que nos permite en cambiarnos, de una ventana a otra */}
+          <button
+            onClick={() =>
+              (window.location.href = "/dashboard/departments/list")
+            }
+            className="flex items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            <FaFileAlt className="mr-2" />
+            <span>View List</span>
+          </button>
+        </div>
+        {message && <p className="mt-4 text-sm text-gray-700">{message}</p>}
+      </form>
+    </div>
   );
 }

@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </ul>
         </nav>
       </aside>
-      <main className="flex-grow p-4">{children}</main>
+      <main className="flex-grow overflow-y-auto p-4">{children}</main>
       {/* Especifica cuánto crecerá un elemento en relación con los demás elementos flexibles del contenedor. */}
     </div>
   );
