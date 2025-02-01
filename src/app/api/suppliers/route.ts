@@ -50,6 +50,7 @@ export async function GET(req: Request) {
   }
 }
 
+//Todo: Funcion para actualizar proovedores
 export async function PATCH(req: Request) {
   try {
     const { id, name, contact, address, phone, country } = await req.json();
@@ -70,6 +71,7 @@ export async function PATCH(req: Request) {
   }
 }
 
+//Todo: Funcion para eliminar proovedores
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
