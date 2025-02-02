@@ -1,18 +1,10 @@
-import Link from "next/link";
+import ProductsForm from "@/components/ProductsForm";
 
 export default function ProductsPage() {
   return (
-    <div className="flex">
-      <div>Products Page</div>
-      <div className="flex justify-center w-96 items-center">
-        <Link
-          href="/dashboard"
-          className="bg-blue-600  hover:bg-blue-500 text-white
-      p-4 transition-300 rounded-lg"
-        >
-          Regresar a Dashboard
-        </Link>
-      </div>
+    <div>
+      <h1 className="text-3xl font-bold mb-4">Products</h1>
+      <ProductsForm />
     </div>
   );
 }
