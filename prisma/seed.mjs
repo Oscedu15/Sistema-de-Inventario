@@ -64,7 +64,7 @@ async function main() {
   await prisma.product.createMany({
     data: [
       {
-        name: "Hammer",
+        name: "Generic Hammer",
         quantity: 15,
         price: 15.99,
         cost: 12.99,
@@ -86,6 +86,31 @@ async function main() {
         cost: 2.99,
         departmentId: 3,
         supplierId: 2,
+      },
+      // Additional Products for Hardware
+      {
+        name: "Screwdriver Set",
+        quantity: 10,
+        price: 25.99,
+        cost: 20.99,
+        departmentId: 1,
+        supplierId: 4,
+      },
+      {
+        name: "Drill Machine",
+        quantity: 5,
+        price: 79.99,
+        cost: 60.99,
+        departmentId: 1,
+        supplierId: 7,
+      },
+      {
+        name: "Wrench Set",
+        quantity: 12,
+        price: 35.99,
+        cost: 28.99,
+        departmentId: 1,
+        supplierId: 4,
       },
     ],
   });
